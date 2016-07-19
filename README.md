@@ -37,7 +37,11 @@ Generate a Google Maps API key here: https://console.developers.google.com/apis/
 * Run your browser to `http://localhost:8000`
 
 ### Windows
-* `pip install -r requirements.txt`
+* requirements python 2.7
+* firt command in cmd :
+* `run pip.exe install -r [localisation requirements.txt]`
+* Example : `C:\Python27\Scripts\pip.exe install -r C:\Users\Royal\Downloads\pkmngo-map-maps\requirements.txt`
+*
 * Put Google Maps API key in `config.json`
 * Start `run.bat` and enter in prompts for username, password, and location
 * Open browser to `http://localhost:8000`
