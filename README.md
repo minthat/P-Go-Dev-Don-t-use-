@@ -10,7 +10,7 @@ his views will be rejected.
 * Includes protobuf file
 * Ugly code
 
-This version works only with **PokemonTrainerClub** account.
+This version works only with **PokemonTrainerClub** account.<br/>
 **Don't use your official account or you may end up Banned.**
 
 **Don't refresh Gyms and Pokestop data many time on Phone, it will consume much bandwith**
@@ -29,6 +29,8 @@ Another screen https://i.imgur.com/mpLvARC.png
 
 Generate a Google Maps API key here: https://console.developers.google.com/apis/credentials
 
+Use Python2.7 for better compatibility.
+
 ### Linux/macOS
 * `pip install -r requirements.txt`
 * Put Google Maps API key in `config.json`
@@ -37,11 +39,7 @@ Generate a Google Maps API key here: https://console.developers.google.com/apis/
 * Run your browser to `http://localhost:8000`
 
 ### Windows
-* requirements python 2.7
-* firt command in cmd :
-* `run pip.exe install -r [localisation requirements.txt]`
-* Example : `C:\Python27\Scripts\pip.exe install -r C:\Users\Royal\Downloads\pkmngo-map-maps\requirements.txt`
-*
+* Frist run `pip.exe install -r [location requirements.txt]`, <br/>Example : `C:\Python27\Scripts\pip.exe install -r C:\Users\Royal\Downloads\pkmngo-map-maps\requirements.txt`
 * Put Google Maps API key in `config.json`
 * Start `run.bat` and enter in prompts for username, password, and location
 * Open browser to `http://localhost:8000`
