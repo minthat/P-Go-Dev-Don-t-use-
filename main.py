@@ -65,7 +65,7 @@ FLOAT_LONG = 0
 deflat, deflng = 0, 0
 default_step = 0.001
 
-NUM_STEPS = 5
+NUM_STEPS = 10
 PKMN_DATA_FILE = 'pkmn.json'
 PKSTOP_DATA_FILE = 'pkstop.json'
 GYM_DATA_FILE = 'gym.json'
@@ -127,7 +127,9 @@ def add_pokemon(pokeId, name, lat, lng, timestamp, timeleft):
         }
 
 def add_pokestop(pokestopId, lat, lng, timeleft):
-    if not pokestopId in DATA['pokestop']:
+    if pokestopId in DATA['pokestop']:
+        DATA['pokestop'][pokestopId]['timeleft'] = timeleft
+    else:
         DATA['pokestop'][pokestopId] = {
             'id': pokestopId,
             'lat': lat,
@@ -136,7 +138,11 @@ def add_pokestop(pokestopId, lat, lng, timeleft):
         }
 
 def add_gym(gymId, team, lat, lng, points, pokemonGuard):
-    if not gymId in DATA['gym']:
+    if gymId in DATA['gym']:
+        DATA['gym'][gymId]['team'] = team
+        DATA['gym'][gymId]['points'] = points
+        DATA['gym'][gymId]['guard'] = pokemonGuard
+    else:
         DATA['gym'][gymId] = {
             'id': gymId,
             'team': team,
@@ -394,7 +400,6 @@ def scan(api_endpoint, access_token, response, origin, pokemons):
                         for Fort in cell.Fort:
                             if Fort.Enabled == True:
                                 if Fort.GymPoints:
-
                                     add_gym(Fort.FortId, Fort.Team, Fort.Latitude, Fort.Longitude, Fort.GymPoints, pokemons[Fort.GuardPokemonId - 1]['Name'])
                                 elif Fort.FortType:
                                     expire_time = 0
@@ -414,7 +419,7 @@ def scan(api_endpoint, access_token, response, origin, pokemons):
             difflat = diff.lat().degrees
             difflng = diff.lng().degrees
 
-            print("(%s) %s is visible at (%s, %s) for %s seconds" % (poke.pokemon.PokemonId, pokemons[poke.pokemon.PokemonId - 1]['Name'], poke.Latitude, poke.Longitude, poke.TimeTillHiddenMs / 1000))
+            print("[+] (%s) %s is visible at (%s, %s) for %s seconds" % (poke.pokemon.PokemonId, pokemons[poke.pokemon.PokemonId - 1]['Name'], poke.Latitude, poke.Longitude, poke.TimeTillHiddenMs / 1000))
 
             timestamp = int(time.time())
             add_pokemon(poke.pokemon.PokemonId, pokemons[poke.pokemon.PokemonId - 1]['Name'], poke.Latitude, poke.Longitude, timestamp, poke.TimeTillHiddenMs / 1000)
@@ -468,18 +473,21 @@ def main():
     if response is not None:
         print('[+] Login successful')
 
-        payload = response.payload[0]
-        profile = pokemon_pb2.ResponseEnvelop.ProfilePayload()
-        profile.ParseFromString(payload)
-        print('[+] Username: {}'.format(profile.profile.username))
+        if response.payload != '':
+            payload = response.payload[0]
+            profile = pokemon_pb2.ResponseEnvelop.ProfilePayload()
+            profile.ParseFromString(payload)
+            print('[+] Username: {}'.format(profile.profile.username))
 
-        creation_time = datetime.fromtimestamp(int(profile.profile.creation_time)/1000)
-        print('[+] You are playing Pokemon Go since: {}'.format(
-            creation_time.strftime('%Y-%m-%d %H:%M:%S'),
-        ))
+            creation_time = datetime.fromtimestamp(int(profile.profile.creation_time)/1000)
+            print('[+] You are playing Pokemon Go since: {}'.format(
+                creation_time.strftime('%Y-%m-%d %H:%M:%S'),
+            ))
 
-        for curr in profile.profile.currency:
-            print('[+] {}: {}'.format(curr.type, curr.amount))
+            for curr in profile.profile.currency:
+                print('[+] {}: {}'.format(curr.type, curr.amount))
+        else:
+            print('[-] Profile payload empty')
     else:
         print('[-] Ooops...')
 
